@@ -1,6 +1,7 @@
 streamlit
 langchain>=0.1.0
 openai
+langchain-huggingface
 huggingface_hub
 langchain-openai
 langchain_core
