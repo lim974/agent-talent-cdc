@@ -1,19 +1,17 @@
 import streamlit as st
-import os
-from langchain.llms import HuggingFaceHub
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+import os
 import json
 
-# 🔑 Récupération du token Hugging Face depuis les secrets Streamlit
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
+# Configuration API
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-# Initialisation du modèle Hugging Face (exemple : mistralai/Mistral-7B-Instruct-v0.2)
-llm = HuggingFaceHub(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.2",
-    model_kwargs={"temperature": 0.3, "max_new_tokens": 512}
-)
+# Initialisation du modèle
+llm = ChatOpenAI(temperature=0.3)
 
+# Templates pour chaque étape
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
     "Semaine 2": "Propose des idées et benchmarks pour : {context}",
@@ -21,6 +19,7 @@ templates = {
     "Semaine 4": "Synthétise les livrables en rapport structuré : {context}"
 }
 
+# Sauvegarde état sprint
 STATE_FILE = "sprint_state.json"
 
 def save_state(data):
@@ -33,7 +32,8 @@ def load_state():
             return json.load(f)
     return {}
 
-st.title("Assistant Sprint – MVP (Hugging Face)")
+# Interface Streamlit
+st.title("Assistant Sprint – MVP")
 state = load_state()
 
 step = st.selectbox("Choisir l'étape du sprint :", list(templates.keys()))
@@ -49,6 +49,7 @@ if st.button("Générer recommandations"):
     state["last_result"] = result
     save_state(state)
 
+# Checklist interactive
 st.subheader("Checklist")
 tasks = ["Cadrage terminé", "Benchmark réalisé", "Prototype créé", "Tests effectués", "Rapport rédigé"]
 for task in tasks:
@@ -56,6 +57,7 @@ for task in tasks:
     state[task] = checked
 save_state(state)
 
+# Upload livrables
 uploaded_files = st.file_uploader("Uploader livrables (Word, PDF)", accept_multiple_files=True)
 if uploaded_files:
     st.write(f"{len(uploaded_files)} fichiers uploadés.")
