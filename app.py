@@ -1,16 +1,15 @@
 import streamlit as st
 import os
 from langchain_core.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI  # Pour OpenAI
-# from langchain_huggingface import HuggingFaceEndpoint  # Pour HuggingFace, décommentez si besoin
+from langchain_huggingface import HuggingFaceEndpoint
 
-# Récupération du token depuis les secrets Streamlit
-os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]  # Pour OpenAI
-# os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]  # Pour HuggingFace
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
-# Initialisation du modèle
-llm = ChatOpenAI(openai_api_key=os.environ["OPENAI_API_KEY"])  # Pour OpenAI
-# llm = HuggingFaceEndpoint(repo_id="mistralai/Mistral-7B-Instruct-v0.2", huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"])  # Pour HuggingFace
+llm = HuggingFaceEndpoint(
+    repo_id="mistralai/Mistral-7B-Instruct-v0.2",
+    huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
+    model_kwargs={"temperature": 0.3, "max_new_tokens": 512}
+)
 
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
@@ -19,13 +18,12 @@ templates = {
     "Semaine 4": "Synthétise les livrables en rapport structuré : {context}"
 }
 
-st.title("Assistant Sprint – MVP (LangChain nouvelle version)")
+st.title("Assistant Sprint – MVP (Hugging Face)")
 step = st.selectbox("Choisir l'étape du sprint :", list(templates.keys()))
 context = st.text_area("Décris le contexte ou l'irritant :")
 
 if st.button("Générer recommandations"):
     prompt = PromptTemplate(template=templates[step], input_variables=["context"])
-    # Nouvelle façon d'exécuter le prompt avec le LLM
     result = llm.invoke(prompt.format(context=context))
     st.write("### Recommandations :")
     st.write(result)
