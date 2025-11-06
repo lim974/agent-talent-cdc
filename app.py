@@ -3,17 +3,16 @@ import os
 from langchain_core.prompts import PromptTemplate
 from langchain_huggingface import HuggingFaceEndpoint
 
+# Récupération du token Hugging Face depuis les secrets Streamlit
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
-
-
+# Initialisation du modèle SmolLM3-3B
 llm = HuggingFaceEndpoint(
-    repo_id="google/flan-t5-base",
+    repo_id="HuggingFaceTB/SmolLM3-3B",
     huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
-    task="text2text-generation"
+    task="text-generation",  # Ce modèle est bien text-generation
+    model_kwargs={"max_new_tokens": 512}  # Tu peux ajuster selon tes besoins
 )
-
-
 
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
@@ -22,7 +21,7 @@ templates = {
     "Semaine 4": "Synthétise les livrables en rapport structuré : {context}"
 }
 
-st.title("Assistant Sprint – MVP (Hugging Face)")
+st.title("Assistant Sprint – MVP (SmolLM3-3B Hugging Face)")
 step = st.selectbox("Choisir l'étape du sprint :", list(templates.keys()))
 context = st.text_area("Décris le contexte ou l'irritant :")
 
