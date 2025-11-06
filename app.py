@@ -6,11 +6,13 @@ from langchain_huggingface import HuggingFaceEndpoint
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
+
 llm = HuggingFaceEndpoint(
-    repo_id="mistralai/Mistral-7B-Instruct-v0.2",
+    repo_id="google/flan-t5-base",
     huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
-    task="text-generation"
+    task="text2text-generation"
 )
+
 
 
 templates = {
