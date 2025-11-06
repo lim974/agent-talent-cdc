@@ -7,12 +7,13 @@ from langchain_huggingface import HuggingFaceEndpoint
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 # Initialisation du modèle SmolLM3-3B
+
 llm = HuggingFaceEndpoint(
     repo_id="HuggingFaceTB/SmolLM3-3B",
     huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
-    task="text-generation",  # Ce modèle est bien text-generation
-    model_kwargs={"max_new_tokens": 512}  # Tu peux ajuster selon tes besoins
+    task="text-generation"
 )
+
 
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
