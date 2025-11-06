@@ -6,14 +6,13 @@ from langchain_huggingface import HuggingFaceEndpoint
 # Récupération du token Hugging Face depuis les secrets Streamlit
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
-# Initialisation du modèle SmolLM3-3B
-
+# Initialisation du modèle Flan-T5
 llm = HuggingFaceEndpoint(
-    repo_id="HuggingFaceTB/SmolLM3-3B",
+    repo_id="google/flan-t5-base",
     huggingfacehub_api_token=os.environ["HUGGINGFACEHUB_API_TOKEN"],
-    task="text-generation"
+    task="text2text-generation",  # Tâche compatible avec Flan-T5
+    model_kwargs={"max_new_tokens": 512}
 )
-
 
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
@@ -22,7 +21,7 @@ templates = {
     "Semaine 4": "Synthétise les livrables en rapport structuré : {context}"
 }
 
-st.title("Assistant Sprint – MVP (SmolLM3-3B Hugging Face)")
+st.title("Assistant Sprint – MVP (Flan-T5 Hugging Face)")
 step = st.selectbox("Choisir l'étape du sprint :", list(templates.keys()))
 context = st.text_area("Décris le contexte ou l'irritant :")
 
