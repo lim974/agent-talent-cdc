@@ -1,17 +1,17 @@
 import streamlit as st
-from langchain.chat_models import ChatOpenAI
+import os
+from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-import os
 import json
 
-# Configuration API
+# 🔑 Récupération de la clé OpenAI depuis les secrets Streamlit
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-# Initialisation du modèle
-llm = ChatOpenAI(temperature=0.3)
+# Initialisation du modèle OpenAI via LangChain
+llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.3)
 
-# Templates pour chaque étape
+# Templates pour chaque étape du sprint
 templates = {
     "Semaine 1": "Tu es un facilitateur. Aide à cadrer le besoin : {context}",
     "Semaine 2": "Propose des idées et benchmarks pour : {context}",
@@ -19,7 +19,7 @@ templates = {
     "Semaine 4": "Synthétise les livrables en rapport structuré : {context}"
 }
 
-# Sauvegarde état sprint
+# Sauvegarde état du sprint
 STATE_FILE = "sprint_state.json"
 
 def save_state(data):
